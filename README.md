@@ -1,1 +1,13 @@
-Repository exclusively created for managing and testing my projects
+# Kronii Fishing
+
+## Setup
+
+```bash
+npm install
+```
+
+## Running
+
+```bash
+npm start
+```
