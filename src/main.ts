@@ -24,7 +24,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
       fill: 0xffffff
   });
   titleText.anchor.set(0.5);
-  titleText.x = window.innerWidth/2;
+  titleText.x = app.screen.width /2;
   titleText.y=150;
   titleScene.addChild(titleText);
 
@@ -33,7 +33,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startButton.fill(0x0011ff);
   startButton.interactive = true;
   // startButton.buttonMode = true;
-  startButton.x = window.innerWidth /2 -100;
+  startButton.x = app.screen.width /2 -100;
   startButton.y = 300;
 
   let startText = new Text("Start",{
@@ -50,7 +50,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   let exitButton = new Graphics();
   exitButton.roundRect(0, 0, 200, 60);
   exitButton.fill(0x466494);
-  exitButton.x = window.innerWidth /2 -100;
+  exitButton.x =app.screen.width /2 -100;
   exitButton.y = 400;
   exitButton.interactive = true;
   // exitButton.buttonMode = true;
@@ -77,34 +77,34 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   gameScene.visible = false;
   app.stage.addChild(gameScene);
   
-  let kroniiBody = new Graphics();
-  kroniiBody.rect(0, 0, 80, 160);
-  kroniiBody.fill(0x0000ff);
-  kroniiBody.x = 80;
-  kroniiBody.y = 50;
-  let kroText = new Text("This is supposed to be kronii",{
+  let gameBackground = new Container(); //TODO add background image
+
+  let fishingSpot = new Graphics();
+  fishingSpot.circle(0, 0, 30);
+  fishingSpot.fill(0x000000);
+  fishingSpot.x = 2000;
+  fishingSpot.y = 2000;
+  gameBackground.addChild(fishingSpot);
+  gameScene.addChild(gameBackground);
+  let positionText = new Text("Pos - X: 0, Y: 0",{
       fontFamily: "Arial",
       fontSize: 20,
       fill: 0xffffff,
       align: "center"
   });
-  kroText.anchor.set(0.5)
-  kroText.x = 40;
-  kroText.y = 2;
-  kroniiBody.addChild(kroText);
+  positionText.anchor.set(0.5)
+  positionText.x = 25;
+  positionText.y = 25;
+  gameScene.addChild(positionText);
+
+
+  let kroniiBody = new Graphics();
+  kroniiBody.rect(0, 0, 80, 160);
+  kroniiBody.fill(0x0000ff);
+  kroniiBody.x = (app.screen.width/2)-kroniiBody.height/2;
+  kroniiBody.y = (app.screen.height/2)-kroniiBody.width/2;
   gameScene.addChild(kroniiBody);
   
-  let gameText = new Text("You are now on game scene", {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0xffffff,
-      align: "center"  
-  });
-  gameText.anchor.set(0.5);
-  gameText.x = window.innerWidth/2;
-  gameText.y = window.innerHeight/2;
-  gameScene.addChild(gameText);
-
 
   /*
   *   GAME LOOP
@@ -112,11 +112,12 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   *
   */
   let elapsed=0.0;
-  app.ticker.add((gameloop)=>{
+  app.ticker.add((gameloop: any)=>{
       elapsed+= gameloop.deltaTime;
       if(gameScene.visible){
           movePlayer(gameloop)
       }
+      positionText.text="Pos - X:"+gameBackground.x+", Y: "+gameBackground.y;
   });
 
   let keys: Record<string, Boolean> = {};
@@ -135,10 +136,16 @@ import { Application, Container, Graphics, Text } from "pixi.js";
       /* TODO maybe move the background instead of the player
       and keep the player on the middle of the screen at all
       times... */
+      /*
       if(keys["W"]|| keys["w"]) kroniiBody.y -= 5;
       if(keys["D"]|| keys["d"]) kroniiBody.x += 5;
       if(keys["A"]|| keys["a"]) kroniiBody.x -= 5;
-      if(keys["S"]|| keys["s"]) kroniiBody.y += 5;
+      if(keys["S"]|| keys["s"]) kroniiBody.y += 5;*/
+      //background movement instead of player sprite movement test
+      if(keys["W"]|| keys["w"])gameBackground.y += 5;
+      if(keys["D"]|| keys["d"])gameBackground.x -= 5;
+      if(keys["A"]|| keys["a"])gameBackground.x += 5;
+      if(keys["S"]|| keys["s"])gameBackground.y -= 5;
   }
 
 
