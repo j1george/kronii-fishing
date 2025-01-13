@@ -79,18 +79,22 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   
   let gameBackground = new Container(); //TODO add background image
 
+  //fishing spot object test. The circle appears out of the player's LoS (the screen)
+  //and it'll start appearing once the player gets close to the circle's position.
+  //Added as a child of gameBackground container, so it will move along with it
+  //For now, as an unwanted behaviour, it might be loaded and drawn at all times
   let fishingSpot = new Graphics();
-  fishingSpot.circle(0, 0, 30);
+  fishingSpot.circle(0, 0, 50);
   fishingSpot.fill(0x000000);
-  fishingSpot.x = 2000;
-  fishingSpot.y = 2000;
+  fishingSpot.x = 900;
+  fishingSpot.y = 700;
   gameBackground.addChild(fishingSpot);
   gameScene.addChild(gameBackground);
   let positionText = new Text("Pos - X: 0, Y: 0",{
       fontFamily: "Arial",
       fontSize: 20,
       fill: 0xffffff,
-      align: "center"
+      align: "left"
   });
   positionText.anchor.set(0.5)
   positionText.x = 25;
@@ -104,8 +108,32 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   kroniiBody.x = (app.screen.width/2)-kroniiBody.height/2;
   kroniiBody.y = (app.screen.height/2)-kroniiBody.width/2;
   gameScene.addChild(kroniiBody);
-  
+  //text that appears once the player is inside a fishing spot bounds
+  let fishingText = new Text("Fish!",{
+    fontFamily: "Arial",
+    fontSize: 30,
+    fill: 0xffffff,
+    align: "center"
+});
+    fishingText.anchor.set(0.5);
+    fishingText.x= kroniiBody.width/2;
+    fishingText.y = -10;
+    fishingText.visible = false;
+    kroniiBody.addChild(fishingText);
 
+    //Container for the inventroy HUD
+    const inventoryContainer = new Container();
+    inventoryContainer.x = app.screen.width;
+    inventoryContainer.y =0;
+    const inventoryBackground = new Graphics();
+    inventoryBackground.rect(0,0, app.screen.width*0.15,app.screen.height);
+    inventoryBackground.fill(0x0A0AFF);
+    inventoryContainer.addChild(inventoryBackground);
+    gameScene.addChild(inventoryContainer);
+
+    let isInventoryVisible = false; //these three are for the animation
+    let startTime = 0;              //of the inventory menu
+    let animationCooldown = false;  //
   /*
   *   GAME LOOP
   *
@@ -117,7 +145,12 @@ import { Application, Container, Graphics, Text } from "pixi.js";
       if(gameScene.visible){
           movePlayer(gameloop)
       }
-      positionText.text="Pos - X:"+gameBackground.x+", Y: "+gameBackground.y;
+      if(fishingActionAvailable()){
+        fishingText.visible=true;
+      }else{
+        fishingText.visible=false;
+      }
+      positionText.text="Pos - X:"+kroniiBody.x+", Y: "+kroniiBody.y;
   });
 
   let keys: Record<string, Boolean> = {};
@@ -132,22 +165,59 @@ import { Application, Container, Graphics, Text } from "pixi.js";
 
 
   //functions
+  // TODO Rename to playerControls or set the E key to another function
   function movePlayer(delta: any){
-      /* TODO maybe move the background instead of the player
-      and keep the player on the middle of the screen at all
-      times... */
-      /*
-      if(keys["W"]|| keys["w"]) kroniiBody.y -= 5;
-      if(keys["D"]|| keys["d"]) kroniiBody.x += 5;
-      if(keys["A"]|| keys["a"]) kroniiBody.x -= 5;
-      if(keys["S"]|| keys["s"]) kroniiBody.y += 5;*/
-      //background movement instead of player sprite movement test
       if(keys["W"]|| keys["w"])gameBackground.y += 5;
       if(keys["D"]|| keys["d"])gameBackground.x -= 5;
       if(keys["A"]|| keys["a"])gameBackground.x += 5;
       if(keys["S"]|| keys["s"])gameBackground.y -= 5;
+
+      if((keys["E"]||keys["e"])&& !animationCooldown){
+            isInventoryVisible = !isInventoryVisible;
+            startTime = Date.now();
+            app.ticker.add(animateInventory);
+            animationCooldown = true;
+            setTimeout(()=>{
+                animationCooldown=false;
+            },1000);
+    }
+  }
+  
+  function fishingActionAvailable(){
+    //function to check if the player is inside a fishing spot bounds, to enable
+    //the fishing minigame
+    //TODO set all fishing spots of the map
+    //TODO add fishing spots (array?) as parameter
+
+    //Store coordinates of both the player and the fishing spot
+    const playerBounds = kroniiBody.getBounds();
+    const fishingSpotBounds = fishingSpot.getBounds();
+    //calculate distance from the player to the fishing spot
+    const distX = Math.abs(playerBounds.x + playerBounds.width / 2 - fishingSpotBounds.x - fishingSpotBounds.width / 2);
+    const distY = Math.abs(playerBounds.y + playerBounds.height / 2 - fishingSpotBounds.y - fishingSpotBounds.height / 2);
+    //Pythagoras theorem
+    const distance = Math.sqrt(distX * distX + distY * distY);
+    //We simulate that the kroniiBody has a "radius" and set the distance in which
+    //both figures touch
+    const contactDistance = (Math.min(playerBounds.width, playerBounds.height) / 2) + fishingSpotBounds.width / 2;
+
+    return distance < contactDistance;
   }
 
+
+  function animateInventory(deltaTime: any){
+    // TODO Fix cooldown and hiding animation
+    const elapsedTime = (Date.now()-startTime)/1000 //time in seconds
+    const targetX = isInventoryVisible ? app.screen.width * 0.85: app.screen.width;
+
+    if(elapsedTime < 0.5){
+        inventoryContainer.x =app.screen.width + (targetX - app.screen.width) * (elapsedTime / 0.5);
+    }else{
+        inventoryContainer.x =targetX;
+        app.ticker.remove(animateInventory);
+        animationCooldown=false;
+    }
+  }
 
   function changeScene(scene: any){
       titleScene.visible = false;
