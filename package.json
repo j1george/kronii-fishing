@@ -9,6 +9,7 @@
     "dev": "vite"
   },
   "dependencies": {
+    "localforage": "^1.10.0",
     "pixi.js": "^8.6.2"
   },
   "devDependencies": {
