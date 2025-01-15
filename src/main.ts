@@ -17,7 +17,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     */
   const titleScene = new Container();
   app.stage.addChild(titleScene);
-  let titleText = new Text("Fishing game title",{
+  const titleText = new Text("Fishing game title",{
       fontFamily: "Arial",
       fontSize: 50,
       align: "center",
@@ -28,7 +28,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   titleText.y=150;
   titleScene.addChild(titleText);
 
-  let startButton = new Graphics();
+  const startButton = new Graphics();
   startButton.roundRect(0, 0, 200, 60);
   startButton.fill(0x0011ff);
   startButton.interactive = true;
@@ -36,7 +36,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startButton.x = app.screen.width /2 -100;
   startButton.y = 300;
 
-  let startText = new Text("Start",{
+  const startText = new Text("Start",{
       fontFamily: "Arial",
       fontSize: 24,
       fill: 0xffffff,
@@ -47,7 +47,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startButton.addChild(startText);
   titleScene.addChild(startButton);
   
-  let exitButton = new Graphics();
+  const exitButton = new Graphics();
   exitButton.roundRect(0, 0, 200, 60);
   exitButton.fill(0x466494);
   exitButton.x =app.screen.width /2 -100;
@@ -55,7 +55,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   exitButton.interactive = true;
   // exitButton.buttonMode = true;
 
-  let exitText = new Text("Exit",{
+  const exitText = new Text("Exit",{
       fontFamily: "Arial",
       fontSize: 24,
       fill: 0xffffff
@@ -77,20 +77,20 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   gameScene.visible = false;
   app.stage.addChild(gameScene);
   
-  let gameBackground = new Container(); //TODO add background image
+  const gameBackground = new Container(); //TODO add background image
 
   //fishing spot object test. The circle appears out of the player's LoS (the screen)
   //and it'll start appearing once the player gets close to the circle's position.
   //Added as a child of gameBackground container, so it will move along with it
   //For now, as an unwanted behaviour, it might be loaded and drawn at all times
-  let fishingSpot = new Graphics();
+  const fishingSpot = new Graphics();
   fishingSpot.circle(0, 0, 50);
   fishingSpot.fill(0x000000);
   fishingSpot.x = 900;
   fishingSpot.y = 700;
   gameBackground.addChild(fishingSpot);
   gameScene.addChild(gameBackground);
-  let positionText = new Text("Pos - X: 0, Y: 0",{
+  const positionText = new Text("Pos - X: 0, Y: 0",{
       fontFamily: "Arial",
       fontSize: 20,
       fill: 0xffffff,
@@ -102,14 +102,14 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   gameScene.addChild(positionText);
 
 
-  let kroniiBody = new Graphics();
+  const kroniiBody = new Graphics();
   kroniiBody.rect(0, 0, 80, 160);
   kroniiBody.fill(0x0000ff);
   kroniiBody.x = (app.screen.width/2)-kroniiBody.height/2;
   kroniiBody.y = (app.screen.height/2)-kroniiBody.width/2;
   gameScene.addChild(kroniiBody);
   //text that appears once the player is inside a fishing spot bounds
-  let fishingText = new Text("Fish!",{
+  const fishingText = new Text("Fish!",{
     fontFamily: "Arial",
     fontSize: 30,
     fill: 0xffffff,
@@ -153,7 +153,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
       positionText.text="Pos - X:"+kroniiBody.x+", Y: "+kroniiBody.y;
   });
 
-  let keys: Record<string, Boolean> = {};
+  const keys: Record<string, boolean> = {};
   window.addEventListener("keydown", (e)=>{
       keys[e.key]=true;
   });
