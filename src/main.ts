@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import { Application, Container, Graphics, Text } from "pixi.js";
 
 (async () => {
@@ -32,7 +34,6 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startButton.roundRect(0, 0, 200, 60);
   startButton.fill(0x0011ff);
   startButton.interactive = true;
-  // startButton.buttonMode = true;
   startButton.x = app.screen.width /2 -100;
   startButton.y = 300;
 
@@ -53,7 +54,6 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   exitButton.x =app.screen.width /2 -100;
   exitButton.y = 400;
   exitButton.interactive = true;
-  // exitButton.buttonMode = true;
 
   const exitText = new Text("Exit",{
       fontFamily: "Arial",
@@ -139,11 +139,9 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   *
   *
   */
-  let elapsed=0.0;
-  app.ticker.add((gameloop: any)=>{
-      elapsed+= gameloop.deltaTime;
+  app.ticker.add(()=>{
       if(gameScene.visible){
-          movePlayer(gameloop)
+          movePlayer()
       }
       if(fishingActionAvailable()){
         fishingText.visible=true;
@@ -166,7 +164,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
 
   //functions
   // TODO Rename to playerControls or set the E key to another function
-  function movePlayer(delta: any){
+  function movePlayer(){
       if(keys["W"]|| keys["w"])gameBackground.y += 5;
       if(keys["D"]|| keys["d"])gameBackground.x -= 5;
       if(keys["A"]|| keys["a"])gameBackground.x += 5;
@@ -205,7 +203,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   }
 
 
-  function animateInventory(deltaTime: any){
+  function animateInventory(){
     // TODO Fix cooldown and hiding animation
     const elapsedTime = (Date.now()-startTime)/1000 //time in seconds
     const targetX = isInventoryVisible ? app.screen.width * 0.85: app.screen.width;
