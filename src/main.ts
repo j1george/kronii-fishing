@@ -19,11 +19,15 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     */
   const titleScene = new Container();
   app.stage.addChild(titleScene);
-  const titleText = new Text("Fishing game title",{
+
+  const titleText = new Text({
+    text: 'Fishing game title',
+    style: {
       fontFamily: "Arial",
       fontSize: 50,
       align: "center",
-      fill: 0xffffff
+      fill: 0xffffff,
+    },
   });
   titleText.anchor.set(0.5);
   titleText.x = app.screen.width /2;
@@ -37,11 +41,14 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startButton.x = app.screen.width /2 -100;
   startButton.y = 300;
 
-  const startText = new Text("Start",{
+  const startText = new Text({
+    text: 'Start',
+    style: {
       fontFamily: "Arial",
       fontSize: 24,
       fill: 0xffffff,
-  })
+    },
+  });
   startText.anchor.set(0.5);
   startText.x = 100;
   startText.y = 30;
@@ -55,10 +62,13 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   exitButton.y = 400;
   exitButton.interactive = true;
 
-  const exitText = new Text("Exit",{
+  const exitText = new Text({
+    text: 'Exit',
+    style: {
       fontFamily: "Arial",
       fontSize: 24,
-      fill: 0xffffff
+      fill: 0xffffff,
+    },
   });
   exitText.anchor.set(0.5);
   exitText.x=100;
@@ -90,11 +100,14 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   fishingSpot.y = 700;
   gameBackground.addChild(fishingSpot);
   gameScene.addChild(gameBackground);
-  const positionText = new Text("Pos - X: 0, Y: 0",{
+  const positionText = new Text({
+    text: 'Pos - X: 0, Y: 0',
+    style: {
       fontFamily: "Arial",
       fontSize: 20,
       fill: 0xffffff,
-      align: "left"
+      align: "left",
+    },
   });
   positionText.anchor.set(0.5)
   positionText.x = 25;
@@ -109,31 +122,34 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   kroniiBody.y = (app.screen.height/2)-kroniiBody.width/2;
   gameScene.addChild(kroniiBody);
   //text that appears once the player is inside a fishing spot bounds
-  const fishingText = new Text("Fish!",{
-    fontFamily: "Arial",
-    fontSize: 30,
-    fill: 0xffffff,
-    align: "center"
-});
-    fishingText.anchor.set(0.5);
-    fishingText.x= kroniiBody.width/2;
-    fishingText.y = -10;
-    fishingText.visible = false;
-    kroniiBody.addChild(fishingText);
+  const fishingText = new Text({
+    text: 'Fish!',
+    style: {
+      fontFamily: "Arial",
+      fontSize: 30,
+      fill: 0xffffff,
+      align: "center",
+    },
+  });
+  fishingText.anchor.set(0.5);
+  fishingText.x= kroniiBody.width/2;
+  fishingText.y = -10;
+  fishingText.visible = false;
+  kroniiBody.addChild(fishingText);
 
-    //Container for the inventroy HUD
-    const inventoryContainer = new Container();
-    inventoryContainer.x = app.screen.width;
-    inventoryContainer.y =0;
-    const inventoryBackground = new Graphics();
-    inventoryBackground.rect(0,0, app.screen.width*0.15,app.screen.height);
-    inventoryBackground.fill(0x0A0AFF);
-    inventoryContainer.addChild(inventoryBackground);
-    gameScene.addChild(inventoryContainer);
+  //Container for the inventroy HUD
+  const inventoryContainer = new Container();
+  inventoryContainer.x = app.screen.width;
+  inventoryContainer.y =0;
+  const inventoryBackground = new Graphics();
+  inventoryBackground.rect(0,0, app.screen.width*0.15,app.screen.height);
+  inventoryBackground.fill(0x0A0AFF);
+  inventoryContainer.addChild(inventoryBackground);
+  gameScene.addChild(inventoryContainer);
 
-    let isInventoryVisible = false; //these three are for the animation
-    let startTime = 0;              //of the inventory menu
-    let animationCooldown = false;  //
+  let isInventoryVisible = false; //these three are for the animation
+  let startTime = 0;              //of the inventory menu
+  let animationCooldown = false;  //
   /*
   *   GAME LOOP
   *
