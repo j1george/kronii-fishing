@@ -2,22 +2,12 @@
 
 import { Application, Container, Graphics, Text } from "pixi.js";
 
-(async () => {
-  // Create a new application
-  const app = new Application();
-
-  // Initialize the application
-  await app.init({ background: "#1099bb", resizeTo: window });
-
-  // Append the application canvas to the document body
-  document.getElementById("pixi-container")!.appendChild(app.canvas);
-
-  /*
-    * Main menu scene
-    *
-    *
-    */
-  const titleScene = new Container();
+/*
+* Main menu scene
+*
+*
+*/
+const setupMainMenuScene = (app: any, titleScene: any, gameScene: any) => {
   app.stage.addChild(titleScene);
 
   const titleText = new Text({
@@ -30,15 +20,15 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     },
   });
   titleText.anchor.set(0.5);
-  titleText.x = app.screen.width /2;
-  titleText.y=150;
+  titleText.x = app.screen.width / 2;
+  titleText.y = 150;
   titleScene.addChild(titleText);
 
   const startButton = new Graphics();
   startButton.roundRect(0, 0, 200, 60);
   startButton.fill(0x0011ff);
   startButton.interactive = true;
-  startButton.x = app.screen.width /2 -100;
+  startButton.x = app.screen.width / 2 - 100;
   startButton.y = 300;
 
   const startText = new Text({
@@ -54,11 +44,11 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   startText.y = 30;
   startButton.addChild(startText);
   titleScene.addChild(startButton);
-  
+
   const exitButton = new Graphics();
   exitButton.roundRect(0, 0, 200, 60);
   exitButton.fill(0x466494);
-  exitButton.x =app.screen.width /2 -100;
+  exitButton.x = app.screen.width / 2 - 100;
   exitButton.y = 400;
   exitButton.interactive = true;
 
@@ -71,19 +61,32 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     },
   });
   exitText.anchor.set(0.5);
-  exitText.x=100;
-  exitText.y=30;
+  exitText.x = 100;
+  exitText.y = 30;
   exitButton.addChild(exitText);
   titleScene.addChild(exitButton);
-  
-  
-  
-  /*
-  *   Game Scene
-  *   TODO Replace the Graphics object with the Kronii sprite
-  *   once we have it
-  */
-  const gameScene = new Container();
+
+  const changeScene = (scene: any) => {
+    titleScene.visible = false;
+    gameScene.visible = false;
+    scene.visible = true;
+  };
+
+  startButton.on("pointerdown", () => {
+    changeScene(gameScene);
+  });
+  exitButton.on("pointerdown", () => {
+    // TODO exit the game instead of showing this alert
+    alert("Exiting the game... (function not added yet)");
+  });
+};
+
+/*
+*   Game Scene
+*   TODO Replace the Graphics object with the Kronii sprite
+*   once we have it
+*/
+const setupGameScene = (gameScene: any, app: any) => {
   gameScene.visible = false;
   app.stage.addChild(gameScene);
   
@@ -109,7 +112,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
       align: "left",
     },
   });
-  positionText.anchor.set(0.5)
+  positionText.anchor.set(0.5);
   positionText.x = 25;
   positionText.y = 25;
   gameScene.addChild(positionText);
@@ -118,8 +121,8 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   const kroniiBody = new Graphics();
   kroniiBody.rect(0, 0, 80, 160);
   kroniiBody.fill(0x0000ff);
-  kroniiBody.x = (app.screen.width/2)-kroniiBody.height/2;
-  kroniiBody.y = (app.screen.height/2)-kroniiBody.width/2;
+  kroniiBody.x = (app.screen.width / 2) - kroniiBody.height / 2;
+  kroniiBody.y = (app.screen.height / 2) - kroniiBody.width / 2;
   gameScene.addChild(kroniiBody);
   //text that appears once the player is inside a fishing spot bounds
   const fishingText = new Text({
@@ -132,7 +135,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     },
   });
   fishingText.anchor.set(0.5);
-  fishingText.x= kroniiBody.width/2;
+  fishingText.x = kroniiBody.width / 2;
   fishingText.y = -10;
   fishingText.visible = false;
   kroniiBody.addChild(fishingText);
@@ -140,69 +143,63 @@ import { Application, Container, Graphics, Text } from "pixi.js";
   //Container for the inventroy HUD
   const inventoryContainer = new Container();
   inventoryContainer.x = app.screen.width;
-  inventoryContainer.y =0;
+  inventoryContainer.y = 0;
   const inventoryBackground = new Graphics();
-  inventoryBackground.rect(0,0, app.screen.width*0.15,app.screen.height);
+  inventoryBackground.rect(0, 0, app.screen.width * 0.15, app.screen.height);
   inventoryBackground.fill(0x0A0AFF);
   inventoryContainer.addChild(inventoryBackground);
   gameScene.addChild(inventoryContainer);
 
   let isInventoryVisible = false; //these three are for the animation
-  let startTime = 0;              //of the inventory menu
-  let animationCooldown = false;  //
+  let startTime = 0; //of the inventory menu
+  let animationCooldown = false; //
+
   /*
   *   GAME LOOP
   *
   *
   */
-  app.ticker.add(()=>{
-      if(gameScene.visible){
-          movePlayer()
-      }
-      if(fishingActionAvailable()){
-        fishingText.visible=true;
-      }else{
-        fishingText.visible=false;
-      }
-      positionText.text="Pos - X:"+kroniiBody.x+", Y: "+kroniiBody.y;
+  app.ticker.add(() => {
+    if (gameScene.visible) {
+      movePlayer();
+    }
+
+    fishingText.visible = fishingActionAvailable();
+
+    positionText.text = `Pos - X: ${kroniiBody.x}, Y: ${kroniiBody.y}`;
   });
 
   const keys: Record<string, boolean> = {};
-  window.addEventListener("keydown", (e)=>{
-      keys[e.key]=true;
+  window.addEventListener("keydown", (e) => {
+    keys[e.key] = true;
   });
-  window.addEventListener("keyup", (e)=>{
-      keys[e.key]=false;
+  window.addEventListener("keyup", (e) => {
+    keys[e.key] = false;
   });
 
-
-
-
-  //functions
   // TODO Rename to playerControls or set the E key to another function
-  function movePlayer(){
-      if(keys["W"]|| keys["w"])gameBackground.y += 5;
-      if(keys["D"]|| keys["d"])gameBackground.x -= 5;
-      if(keys["A"]|| keys["a"])gameBackground.x += 5;
-      if(keys["S"]|| keys["s"])gameBackground.y -= 5;
+  const movePlayer = () => {
+    if (keys["W"] || keys["w"]) gameBackground.y += 5;
+    if (keys["D"] || keys["d"]) gameBackground.x -= 5;
+    if (keys["A"] || keys["a"]) gameBackground.x += 5;
+    if (keys["S"] || keys["s"]) gameBackground.y -= 5;
 
-      if((keys["E"]||keys["e"])&& !animationCooldown){
-            isInventoryVisible = !isInventoryVisible;
-            startTime = Date.now();
-            app.ticker.add(animateInventory);
-            animationCooldown = true;
-            setTimeout(()=>{
-                animationCooldown=false;
-            },1000);
+    if ((keys["E"] || keys["e"]) && !animationCooldown) {
+      isInventoryVisible = !isInventoryVisible;
+      startTime = Date.now();
+      app.ticker.add(animateInventory);
+      animationCooldown = true;
+      setTimeout(() => {
+        animationCooldown = false;
+      }, 1000);
     }
-  }
-  
-  function fishingActionAvailable(){
+  };
+
+  const fishingActionAvailable = () => {
     //function to check if the player is inside a fishing spot bounds, to enable
     //the fishing minigame
     //TODO set all fishing spots of the map
     //TODO add fishing spots (array?) as parameter
-
     //Store coordinates of both the player and the fishing spot
     const playerBounds = kroniiBody.getBounds();
     const fishingSpotBounds = fishingSpot.getBounds();
@@ -216,34 +213,36 @@ import { Application, Container, Graphics, Text } from "pixi.js";
     const contactDistance = (Math.min(playerBounds.width, playerBounds.height) / 2) + fishingSpotBounds.width / 2;
 
     return distance < contactDistance;
-  }
+  };
 
-
-  function animateInventory(){
+  const animateInventory = () => {
     // TODO Fix cooldown and hiding animation
-    const elapsedTime = (Date.now()-startTime)/1000 //time in seconds
-    const targetX = isInventoryVisible ? app.screen.width * 0.85: app.screen.width;
+    const elapsedTime = (Date.now() - startTime) / 1000; //time in seconds
+    const targetX = isInventoryVisible ? app.screen.width * 0.85 : app.screen.width;
 
-    if(elapsedTime < 0.5){
-        inventoryContainer.x =app.screen.width + (targetX - app.screen.width) * (elapsedTime / 0.5);
-    }else{
-        inventoryContainer.x =targetX;
-        app.ticker.remove(animateInventory);
-        animationCooldown=false;
+    if (elapsedTime < 0.5) {
+      inventoryContainer.x = app.screen.width + (targetX - app.screen.width) * (elapsedTime / 0.5);
+    } else {
+      inventoryContainer.x = targetX;
+      app.ticker.remove(animateInventory);
+      animationCooldown = false;
     }
-  }
+  };
+};
 
-  function changeScene(scene: any){
-      titleScene.visible = false;
-      gameScene.visible=false;
-      scene.visible = true;
-  }
+(async () => {
+  // Create a new application
+  const app = new Application();
 
-  startButton.on("pointerdown", ()=>{
-      changeScene(gameScene);
-  });
-  exitButton.on("pointerdown",()=>{
-      // TODO exit the game instead of showing this alert
-      alert("Exiting the game... (function not added yet)");
-  });
+  // Initialize the application
+  await app.init({ background: "#1099bb", resizeTo: window });
+
+  // Append the application canvas to the document body
+  document.getElementById("pixi-container")!.appendChild(app.canvas);
+  
+  const titleScene = new Container();
+  const gameScene = new Container();
+
+  setupMainMenuScene(app, titleScene, gameScene);
+  setupGameScene(gameScene, app);
 })();
