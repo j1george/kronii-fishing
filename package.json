@@ -9,6 +9,7 @@
     "dev": "vite"
   },
   "dependencies": {
+    "convert-csv-to-json": "^2.50.0",
     "localforage": "^1.10.0",
     "pixi.js": "^8.6.2"
   },
