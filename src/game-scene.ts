@@ -6,9 +6,6 @@ import { Application, Container, Graphics, Text } from "pixi.js";
 *   once we have it
 */
 export const setupGameScene = (app: Application, gameScene: Container) => {
-  gameScene.visible = false;
-  app.stage.addChild(gameScene);
-  
   const gameBackground = new Container(); //TODO add background image
 
   //fishing spot object test. The circle appears out of the player's LoS (the screen)

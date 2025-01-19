@@ -1,14 +1,17 @@
-import { Application, Container, Graphics, Text } from "pixi.js";
+import { Application, Container, FillInput, Graphics, Text } from "pixi.js";
 
 /*
 * Main menu scene
 *
 *
 */
-export const setupMainMenuScene = (app: Application, gameScene: Container) => {
-  const titleScene = new Container();
-  app.stage.addChild(titleScene);
-
+export const setupMainMenuScene = (params: {
+  app: Application,
+  titleScene: Container,
+  goToGameScene: () => void,
+  goToFishDataScene: () => void,
+}) => {
+  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
   const titleText = new Text({
     text: 'Fishing game title',
     style: {
@@ -23,59 +26,80 @@ export const setupMainMenuScene = (app: Application, gameScene: Container) => {
   titleText.y = 150;
   titleScene.addChild(titleText);
 
-  const startButton = new Graphics();
-  startButton.roundRect(0, 0, 200, 60);
-  startButton.fill(0x0011ff);
-  startButton.interactive = true;
-  startButton.x = app.screen.width / 2 - 100;
-  startButton.y = 300;
+  addButtons({ app, titleScene, goToGameScene, goToFishDataScene });
+};
 
-  const startText = new Text({
-    text: 'Start',
-    style: {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0xffffff,
-    },
+const addButtons = (params : {
+  app: Application,
+  titleScene: Container,
+  goToGameScene: () => void,
+  goToFishDataScene: () => void,
+}) => {
+  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
+
+  const startButton = createButton({
+    app,
+    label: 'Start',
+    buttonColor: 0x0011ff,
+    index: 0,
+    onClick: () => goToGameScene,
   });
-  startText.anchor.set(0.5);
-  startText.x = 100;
-  startText.y = 30;
-  startButton.addChild(startText);
   titleScene.addChild(startButton);
 
-  const exitButton = new Graphics();
-  exitButton.roundRect(0, 0, 200, 60);
-  exitButton.fill(0x466494);
-  exitButton.x = app.screen.width / 2 - 100;
-  exitButton.y = 400;
-  exitButton.interactive = true;
+  const exitButton = createButton({
+    app,
+    label: 'Exit',
+    buttonColor: 0x466494,
+    index: 1,
+    onClick: () => {
+      // TODO exit the game instead of showing this alert
+      alert("Exiting the game... (function not added yet)");
+    },
+  });
+  titleScene.addChild(exitButton);
 
-  const exitText = new Text({
-    text: 'Exit',
+  const fishDataButton = createButton({
+    app,
+    label: 'Fish Data',
+    buttonColor: 0x944664,
+    index: 2,
+    onClick: goToFishDataScene,
+  });
+  titleScene.addChild(fishDataButton);
+}
+
+function createButton(params: {
+  app: Application,
+  label: string,
+  onClick: () => void,
+  buttonColor: FillInput,
+  index: number,
+}) {
+  const { app, label, onClick, buttonColor, index } = params;
+
+  const button = new Graphics();
+  button.roundRect(0, 0, 200, 60);
+  button.fill(buttonColor);
+  button.interactive = true;
+  button.x = app.screen.width / 2 - 100;
+  button.y = (index * 100) + 300;
+
+  const text = new Text({
+    text: label,
     style: {
       fontFamily: "Arial",
       fontSize: 24,
       fill: 0xffffff,
     },
   });
-  exitText.anchor.set(0.5);
-  exitText.x = 100;
-  exitText.y = 30;
-  exitButton.addChild(exitText);
-  titleScene.addChild(exitButton);
+  text.anchor.set(0.5);
+  text.x = 100;
+  text.y = 30;
 
-  const changeScene = (scene: Container) => {
-    titleScene.visible = false;
-    gameScene.visible = false;
-    scene.visible = true;
-  };
+  // todo: this is deprecated
+  button.addChild(text);
 
-  startButton.on("pointerdown", () => {
-    changeScene(gameScene);
-  });
-  exitButton.on("pointerdown", () => {
-    // TODO exit the game instead of showing this alert
-    alert("Exiting the game... (function not added yet)");
-  });
-};
+  button.on("pointerdown", onClick);
+
+  return button;
+}
