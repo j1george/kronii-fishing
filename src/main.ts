@@ -1,6 +1,7 @@
 import { Application, Container } from "pixi.js";
 import { setupMainMenuScene } from "./main-menu-scene";
 import { setupGameScene } from "./game-scene";
+import { setupFishDataScene } from "./fish-data-scene";
 
 (async () => {
   // Create a new application
@@ -12,8 +13,27 @@ import { setupGameScene } from "./game-scene";
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
   
+  const titleScene = new Container();
   const gameScene = new Container();
+  const fishDataScene = new Container();
 
-  setupMainMenuScene(app, gameScene);
-  setupGameScene(app, gameScene);
+  const changeScene = (from: Container, to: Container) => {
+    app.stage.removeChild(from);
+    app.stage.addChild(to);
+  };
+
+  app.stage.addChild(titleScene);
+
+  setupMainMenuScene({
+    app, 
+    titleScene,
+    goToGameScene: () => {
+      setupGameScene(app, gameScene);
+      changeScene(titleScene, gameScene);
+    },
+    goToFishDataScene: () => { 
+      setupFishDataScene(fishDataScene);
+      changeScene(titleScene, fishDataScene) 
+    },
+  });
 })();
