@@ -41,16 +41,27 @@ const addButtons = (params : {
     app,
     label: 'Start',
     buttonColor: 0x0011ff,
-    index: 0,
+    index: titleScene.children.length,
     onClick: () => goToGameScene,
   });
   titleScene.addChild(startButton);
 
+  const settingsButton = createButton({
+    app,
+    label: 'Settings',
+    buttonColor: 0x466494,
+    index: titleScene.children.length,
+    onClick: () => {
+      // todo
+    },
+  });
+  titleScene.addChild(settingsButton);
+  
   const exitButton = createButton({
     app,
     label: 'Exit',
     buttonColor: 0x466494,
-    index: 1,
+    index: titleScene.children.length,
     onClick: () => {
       // TODO exit the game instead of showing this alert
       alert("Exiting the game... (function not added yet)");
@@ -62,7 +73,7 @@ const addButtons = (params : {
     app,
     label: 'Fish Data',
     buttonColor: 0x944664,
-    index: 2,
+    index: titleScene.children.length,
     onClick: goToFishDataScene,
   });
   titleScene.addChild(fishDataButton);
