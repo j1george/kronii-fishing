@@ -1,0 +1,41 @@
+import { FillInput, Graphics, Text } from "pixi.js";
+
+export const createButton = (params: {
+  label: string,
+  onClick: () => void,
+  buttonColor: FillInput,
+  x: number,
+  y: number,
+}) => {
+  const { label, onClick, buttonColor, x, y } = params;
+
+  const button = new Graphics();
+  button.roundRect(0, 0, 200, 60);
+  button.fill(buttonColor);
+  button.interactive = true;
+  button.x = x;
+  button.y = y;
+
+  const text = new Text({
+    text: label,
+    style: {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xffffff,
+    },
+  });
+  text.anchor.set(0.5);
+  text.x = 100;
+  text.y = 30;
+
+  // todo: this is deprecated
+  button.addChild(text);
+
+  button.on("pointerdown", onClick);
+
+  return button;
+};
+
+export const notYetImplemented = (msg?: string) => {
+  alert(`Not yet implemented${msg != null ? `: ${msg}` : ''}`);
+};

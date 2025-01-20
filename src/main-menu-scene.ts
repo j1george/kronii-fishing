@@ -1,4 +1,5 @@
-import { Application, Container, FillInput, Graphics, Text } from "pixi.js";
+import { Application, Container, Text } from "pixi.js";
+import { createButton, notYetImplemented } from "./utils";
 
 /*
 * Main menu scene
@@ -7,11 +8,11 @@ import { Application, Container, FillInput, Graphics, Text } from "pixi.js";
 */
 export const setupMainMenuScene = (params: {
   app: Application,
-  titleScene: Container,
+  container: Container,
   goToGameScene: () => void,
-  goToFishDataScene: () => void,
+  goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
+  const { app, container, goToGameScene, goToSettingsScene } = params;
   const titleText = new Text({
     text: 'Fishing game title',
     style: {
@@ -24,82 +25,93 @@ export const setupMainMenuScene = (params: {
   titleText.anchor.set(0.5);
   titleText.x = app.screen.width / 2;
   titleText.y = 150;
-  titleScene.addChild(titleText);
+  container.addChild(titleText);
 
-  addButtons({ app, titleScene, goToGameScene, goToFishDataScene });
+  addButtons({ app, container, goToGameScene, goToSettingsScene });
 };
 
 const addButtons = (params : {
   app: Application,
-  titleScene: Container,
+  container: Container,
   goToGameScene: () => void,
-  goToFishDataScene: () => void,
+  goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
+  const { app, container, goToGameScene, goToSettingsScene } = params;
 
+  addCenterButtons(app, container, goToGameScene, goToSettingsScene);
+  addBottomButtons(app, container);
+};
+
+const addCenterButtons = (app: Application, container: Container, goToGameScene: () => void, goToSettingsScene: () => void) => {
+  const centerButtonsContainer = new Container();
+  container.addChild(centerButtonsContainer);
   const startButton = createButton({
-    app,
     label: 'Start',
     buttonColor: 0x0011ff,
-    index: 0,
-    onClick: () => goToGameScene,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
+    onClick: goToGameScene,
   });
-  titleScene.addChild(startButton);
+  centerButtonsContainer.addChild(startButton);
+
+  const settingsButton = createButton({
+    label: 'Settings',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
+    onClick: goToSettingsScene,
+  });
+  centerButtonsContainer.addChild(settingsButton);
+
+  const cheatButton = createButton({
+    label: 'Cheat',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
+    onClick: () => {
+      // todo
+      notYetImplemented();
+    },
+  });
+  centerButtonsContainer.addChild(cheatButton);
 
   const exitButton = createButton({
-    app,
     label: 'Exit',
     buttonColor: 0x466494,
-    index: 1,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
     onClick: () => {
       // TODO exit the game instead of showing this alert
       alert("Exiting the game... (function not added yet)");
     },
   });
-  titleScene.addChild(exitButton);
+  centerButtonsContainer.addChild(exitButton);
+};
 
-  const fishDataButton = createButton({
-    app,
-    label: 'Fish Data',
-    buttonColor: 0x944664,
-    index: 2,
-    onClick: goToFishDataScene,
-  });
-  titleScene.addChild(fishDataButton);
-}
+const addBottomButtons = (app: Application, container: Container) => {
+  const bottomButtonsContainer = new Container();
+  container.addChild(bottomButtonsContainer);
 
-function createButton(params: {
-  app: Application,
-  label: string,
-  onClick: () => void,
-  buttonColor: FillInput,
-  index: number,
-}) {
-  const { app, label, onClick, buttonColor, index } = params;
-
-  const button = new Graphics();
-  button.roundRect(0, 0, 200, 60);
-  button.fill(buttonColor);
-  button.interactive = true;
-  button.x = app.screen.width / 2 - 100;
-  button.y = (index * 100) + 300;
-
-  const text = new Text({
-    text: label,
-    style: {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0xffffff,
+  const gameInfoButton = createButton({
+    label: 'Game info',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100 - 400,
+    y: 600,
+    onClick: () => {
+      // todo
+      notYetImplemented();
     },
   });
-  text.anchor.set(0.5);
-  text.x = 100;
-  text.y = 30;
-
-  // todo: this is deprecated
-  button.addChild(text);
-
-  button.on("pointerdown", onClick);
-
-  return button;
-}
+  bottomButtonsContainer.addChild(gameInfoButton);
+  const howToPlayButton = createButton({
+    label: 'How to play',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100 + 400,
+    y: 600,
+    onClick: () => {
+      // todo
+      notYetImplemented();
+    },
+  });
+  bottomButtonsContainer.addChild(howToPlayButton);
+};

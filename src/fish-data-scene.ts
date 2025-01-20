@@ -5,7 +5,7 @@ import ConvertCsvToJson from 'convert-csv-to-json';
 *   Fish Data Scene
 * just a scene to test csv to json library
 */
-export const setupFishDataScene = async (fishDataScene: Container) => {
+export const setupFishDataScene = async (container: Container) => {
   const csvText = await loadCSV('data/test-data.csv');
 
   console.log({csvText});
@@ -20,13 +20,11 @@ export const setupFishDataScene = async (fishDataScene: Container) => {
     },
   });
 
-  fishDataScene.addChild(jsonText);
+  container.addChild(jsonText);
 };
 
 const loadCSV = async (url: string) => {
   const response = await fetch(url);
-
-  console.log({response})
 
   return response.text();
 };
