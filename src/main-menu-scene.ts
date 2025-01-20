@@ -51,9 +51,7 @@ const addButtons = (params : {
     label: 'Settings',
     buttonColor: 0x466494,
     index: titleScene.children.length,
-    onClick: () => {
-      // todo
-    },
+    onClick: goToFishDataScene,
   });
   titleScene.addChild(settingsButton);
   
@@ -68,15 +66,6 @@ const addButtons = (params : {
     },
   });
   titleScene.addChild(exitButton);
-
-  const fishDataButton = createButton({
-    app,
-    label: 'Fish Data',
-    buttonColor: 0x944664,
-    index: titleScene.children.length,
-    onClick: goToFishDataScene,
-  });
-  titleScene.addChild(fishDataButton);
 }
 
 function createButton(params: {
