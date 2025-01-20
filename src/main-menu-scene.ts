@@ -1,5 +1,5 @@
 import { Application, Container, Text } from "pixi.js";
-import { createButton } from "./utils";
+import { createButton, notYetImplemented } from "./utils";
 
 /*
 * Main menu scene
@@ -55,6 +55,18 @@ const addButtons = (params : {
     onClick: goToSettingsScene,
   });
   titleScene.addChild(settingsButton);
+  
+  const cheatButton = createButton({
+    app,
+    label: 'Cheat',
+    buttonColor: 0x466494,
+    index: titleScene.children.length,
+    onClick: () => { 
+      // todo
+      notYetImplemented() 
+    },
+  });
+  titleScene.addChild(cheatButton);
   
   const exitButton = createButton({
     app,

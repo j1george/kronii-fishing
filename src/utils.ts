@@ -1,6 +1,5 @@
 import { Application, FillInput, Graphics, Text } from "pixi.js";
 
-
 export const createButton = (params: {
   app: Application,
   label: string,
@@ -35,4 +34,8 @@ export const createButton = (params: {
   button.on("pointerdown", onClick);
 
   return button;
+};
+
+export const notYetImplemented = (msg?: string) => {
+  alert(`Not yet implemented${msg != null ? `: ${msg}` : ''}`);
 };
