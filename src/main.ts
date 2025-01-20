@@ -2,6 +2,7 @@ import { Application, Container } from "pixi.js";
 import { setupMainMenuScene } from "./main-menu-scene";
 import { setupGameScene } from "./game-scene";
 import { setupFishDataScene } from "./fish-data-scene";
+import { setupSettingsScene } from "./settings-scene";
 
 (async () => {
   // Create a new application
@@ -16,6 +17,7 @@ import { setupFishDataScene } from "./fish-data-scene";
   const titleScene = new Container();
   const gameScene = new Container();
   const fishDataScene = new Container();
+  const settingsScene = new Container();
 
   const changeScene = (from: Container, to: Container) => {
     app.stage.removeChild(from);
@@ -31,9 +33,16 @@ import { setupFishDataScene } from "./fish-data-scene";
       setupGameScene(app, gameScene);
       changeScene(titleScene, gameScene);
     },
-    goToFishDataScene: () => { 
-      setupFishDataScene(fishDataScene);
-      changeScene(titleScene, fishDataScene) 
+    goToSettingsScene: () => { 
+      setupSettingsScene({
+        app, 
+        settingsScene,
+        goToFishDataScene: () => {
+          setupFishDataScene(fishDataScene);
+          changeScene(settingsScene, fishDataScene);
+        },
+      });
+      changeScene(titleScene, settingsScene) 
     },
   });
 })();

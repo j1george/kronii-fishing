@@ -1,4 +1,5 @@
-import { Application, Container, FillInput, Graphics, Text } from "pixi.js";
+import { Application, Container, Text } from "pixi.js";
+import { createButton } from "./utils";
 
 /*
 * Main menu scene
@@ -9,9 +10,9 @@ export const setupMainMenuScene = (params: {
   app: Application,
   titleScene: Container,
   goToGameScene: () => void,
-  goToFishDataScene: () => void,
+  goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
+  const { app, titleScene, goToGameScene, goToSettingsScene } = params;
   const titleText = new Text({
     text: 'Fishing game title',
     style: {
@@ -26,16 +27,16 @@ export const setupMainMenuScene = (params: {
   titleText.y = 150;
   titleScene.addChild(titleText);
 
-  addButtons({ app, titleScene, goToGameScene, goToFishDataScene });
+  addButtons({ app, titleScene, goToGameScene, goToSettingsScene });
 };
 
 const addButtons = (params : {
   app: Application,
   titleScene: Container,
   goToGameScene: () => void,
-  goToFishDataScene: () => void,
+  goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToFishDataScene } = params;
+  const { app, titleScene, goToGameScene, goToSettingsScene } = params;
 
   const startButton = createButton({
     app,
@@ -51,7 +52,7 @@ const addButtons = (params : {
     label: 'Settings',
     buttonColor: 0x466494,
     index: titleScene.children.length,
-    onClick: goToFishDataScene,
+    onClick: goToSettingsScene,
   });
   titleScene.addChild(settingsButton);
   
@@ -66,40 +67,4 @@ const addButtons = (params : {
     },
   });
   titleScene.addChild(exitButton);
-}
-
-function createButton(params: {
-  app: Application,
-  label: string,
-  onClick: () => void,
-  buttonColor: FillInput,
-  index: number,
-}) {
-  const { app, label, onClick, buttonColor, index } = params;
-
-  const button = new Graphics();
-  button.roundRect(0, 0, 200, 60);
-  button.fill(buttonColor);
-  button.interactive = true;
-  button.x = app.screen.width / 2 - 100;
-  button.y = (index * 100) + 300;
-
-  const text = new Text({
-    text: label,
-    style: {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0xffffff,
-    },
-  });
-  text.anchor.set(0.5);
-  text.x = 100;
-  text.y = 30;
-
-  // todo: this is deprecated
-  button.addChild(text);
-
-  button.on("pointerdown", onClick);
-
-  return button;
-}
+};
