@@ -1,15 +1,19 @@
 import { Application, Container, Text } from "pixi.js";
 import { createButton } from "./utils";
+import { setupFishDataScene } from "./fish-data-scene";
 
 /*
 * Settings scene
 */
 export const setupSettingsScene = (params: {
   app: Application,
-  settingsScene: Container,
-  goToFishDataScene: () => void,
+  container: Container,
+  changeScene: (from: Container, to: Container) => void,
 }) => {
-  const { app, settingsScene, goToFishDataScene } = params;
+  const { app, container, changeScene } = params;
+
+  const fishDataSceneContainer = new Container();
+
   const titleText = new Text({
     text: 'Settings',
     style: {
@@ -22,24 +26,28 @@ export const setupSettingsScene = (params: {
   titleText.anchor.set(0.5);
   titleText.x = app.screen.width / 2;
   titleText.y = 150;
-  settingsScene.addChild(titleText);
+  container.addChild(titleText);
 
-  addButtons({ app, settingsScene, goToFishDataScene });
+  addButtons({ app, container, fishDataSceneContainer, changeScene });
 };
 
 const addButtons = (params : {
   app: Application,
-  settingsScene: Container,
-  goToFishDataScene: () => void,
+  container: Container,
+  fishDataSceneContainer: Container,
+  changeScene: (from: Container, to: Container) => void,
 }) => {
-  const { app, settingsScene, goToFishDataScene } = params;
+  const { app, container, fishDataSceneContainer, changeScene } = params;
 
   const fishDataButton = createButton({
-    app,
     label: 'Fish Data',
     buttonColor: 0x466494,
-    index: settingsScene.children.length,
-    onClick: goToFishDataScene,
+    x: app.screen.width / 2 - 100,
+    y: (container.children.length * 100) + 300,
+    onClick: () => {
+      setupFishDataScene(fishDataSceneContainer);
+      changeScene(container, fishDataSceneContainer);
+    },
   });
-  settingsScene.addChild(fishDataButton);
+  container.addChild(fishDataButton);
 };

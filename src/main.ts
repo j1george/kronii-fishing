@@ -1,7 +1,6 @@
 import { Application, Container } from "pixi.js";
 import { setupMainMenuScene } from "./main-menu-scene";
 import { setupGameScene } from "./game-scene";
-import { setupFishDataScene } from "./fish-data-scene";
 import { setupSettingsScene } from "./settings-scene";
 
 (async () => {
@@ -14,35 +13,31 @@ import { setupSettingsScene } from "./settings-scene";
   // Append the application canvas to the document body
   document.getElementById("pixi-container")!.appendChild(app.canvas);
   
-  const titleScene = new Container();
-  const gameScene = new Container();
-  const fishDataScene = new Container();
-  const settingsScene = new Container();
+  const titleSceneContainer = new Container();
+  const gameSceneContainer = new Container();
+  const settingsSceneContainer = new Container();
 
   const changeScene = (from: Container, to: Container) => {
     app.stage.removeChild(from);
     app.stage.addChild(to);
   };
 
-  app.stage.addChild(titleScene);
+  app.stage.addChild(titleSceneContainer);
 
   setupMainMenuScene({
     app, 
-    titleScene,
+    container: titleSceneContainer,
     goToGameScene: () => {
-      setupGameScene(app, gameScene);
-      changeScene(titleScene, gameScene);
+      setupGameScene(app, gameSceneContainer);
+      changeScene(titleSceneContainer, gameSceneContainer);
     },
     goToSettingsScene: () => { 
       setupSettingsScene({
         app, 
-        settingsScene,
-        goToFishDataScene: () => {
-          setupFishDataScene(fishDataScene);
-          changeScene(settingsScene, fishDataScene);
-        },
+        container: settingsSceneContainer,
+        changeScene,
       });
-      changeScene(titleScene, settingsScene) 
+      changeScene(titleSceneContainer, settingsSceneContainer) 
     },
   });
 })();

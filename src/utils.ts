@@ -1,20 +1,20 @@
-import { Application, FillInput, Graphics, Text } from "pixi.js";
+import { FillInput, Graphics, Text } from "pixi.js";
 
 export const createButton = (params: {
-  app: Application,
   label: string,
   onClick: () => void,
   buttonColor: FillInput,
-  index: number,
+  x: number,
+  y: number,
 }) => {
-  const { app, label, onClick, buttonColor, index } = params;
+  const { label, onClick, buttonColor, x, y } = params;
 
   const button = new Graphics();
   button.roundRect(0, 0, 200, 60);
   button.fill(buttonColor);
   button.interactive = true;
-  button.x = app.screen.width / 2 - 100;
-  button.y = (index * 100) + 300;
+  button.x = x;
+  button.y = y;
 
   const text = new Text({
     text: label,

@@ -5,7 +5,7 @@ import { Application, Container, Graphics, Text } from "pixi.js";
 *   TODO Replace the Graphics object with the Kronii sprite
 *   once we have it
 */
-export const setupGameScene = (app: Application, gameScene: Container) => {
+export const setupGameScene = (app: Application, container: Container) => {
   const gameBackground = new Container(); //TODO add background image
 
   //fishing spot object test. The circle appears out of the player's LoS (the screen)
@@ -18,7 +18,7 @@ export const setupGameScene = (app: Application, gameScene: Container) => {
   fishingSpot.x = 900;
   fishingSpot.y = 700;
   gameBackground.addChild(fishingSpot);
-  gameScene.addChild(gameBackground);
+  container.addChild(gameBackground);
   const positionText = new Text({
     text: 'Pos - X: 0, Y: 0',
     style: {
@@ -31,7 +31,7 @@ export const setupGameScene = (app: Application, gameScene: Container) => {
   positionText.anchor.set(0.5);
   positionText.x = 25;
   positionText.y = 25;
-  gameScene.addChild(positionText);
+  container.addChild(positionText);
 
 
   const kroniiBody = new Graphics();
@@ -39,7 +39,7 @@ export const setupGameScene = (app: Application, gameScene: Container) => {
   kroniiBody.fill(0x0000ff);
   kroniiBody.x = (app.screen.width / 2) - kroniiBody.height / 2;
   kroniiBody.y = (app.screen.height / 2) - kroniiBody.width / 2;
-  gameScene.addChild(kroniiBody);
+  container.addChild(kroniiBody);
   //text that appears once the player is inside a fishing spot bounds
   const fishingText = new Text({
     text: 'Fish!',
@@ -64,7 +64,7 @@ export const setupGameScene = (app: Application, gameScene: Container) => {
   inventoryBackground.rect(0, 0, app.screen.width * 0.15, app.screen.height);
   inventoryBackground.fill(0x0A0AFF);
   inventoryContainer.addChild(inventoryBackground);
-  gameScene.addChild(inventoryContainer);
+  container.addChild(inventoryContainer);
 
   let isInventoryVisible = false; //these three are for the animation
   let startTime = 0; //of the inventory menu
@@ -76,7 +76,7 @@ export const setupGameScene = (app: Application, gameScene: Container) => {
   *
   */
   app.ticker.add(() => {
-    if (gameScene.visible) {
+    if (container.visible) {
       movePlayer();
     }
 

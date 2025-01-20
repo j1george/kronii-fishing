@@ -8,11 +8,11 @@ import { createButton, notYetImplemented } from "./utils";
 */
 export const setupMainMenuScene = (params: {
   app: Application,
-  titleScene: Container,
+  container: Container,
   goToGameScene: () => void,
   goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToSettingsScene } = params;
+  const { app, container, goToGameScene, goToSettingsScene } = params;
   const titleText = new Text({
     text: 'Fishing game title',
     style: {
@@ -25,58 +25,93 @@ export const setupMainMenuScene = (params: {
   titleText.anchor.set(0.5);
   titleText.x = app.screen.width / 2;
   titleText.y = 150;
-  titleScene.addChild(titleText);
+  container.addChild(titleText);
 
-  addButtons({ app, titleScene, goToGameScene, goToSettingsScene });
+  addButtons({ app, container, goToGameScene, goToSettingsScene });
 };
 
 const addButtons = (params : {
   app: Application,
-  titleScene: Container,
+  container: Container,
   goToGameScene: () => void,
   goToSettingsScene: () => void,
 }) => {
-  const { app, titleScene, goToGameScene, goToSettingsScene } = params;
+  const { app, container, goToGameScene, goToSettingsScene } = params;
 
+  addCenterButtons(app, container, goToGameScene, goToSettingsScene);
+  addBottomButtons(app, container);
+};
+
+const addCenterButtons = (app: Application, container: Container, goToGameScene: () => void, goToSettingsScene: () => void) => {
+  const centerButtonsContainer = new Container();
+  container.addChild(centerButtonsContainer);
   const startButton = createButton({
-    app,
     label: 'Start',
     buttonColor: 0x0011ff,
-    index: titleScene.children.length,
-    onClick: () => goToGameScene,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
+    onClick: goToGameScene,
   });
-  titleScene.addChild(startButton);
+  centerButtonsContainer.addChild(startButton);
 
   const settingsButton = createButton({
-    app,
     label: 'Settings',
     buttonColor: 0x466494,
-    index: titleScene.children.length,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
     onClick: goToSettingsScene,
   });
-  titleScene.addChild(settingsButton);
-  
+  centerButtonsContainer.addChild(settingsButton);
+
   const cheatButton = createButton({
-    app,
     label: 'Cheat',
     buttonColor: 0x466494,
-    index: titleScene.children.length,
-    onClick: () => { 
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
+    onClick: () => {
       // todo
-      notYetImplemented() 
+      notYetImplemented();
     },
   });
-  titleScene.addChild(cheatButton);
-  
+  centerButtonsContainer.addChild(cheatButton);
+
   const exitButton = createButton({
-    app,
     label: 'Exit',
     buttonColor: 0x466494,
-    index: titleScene.children.length,
+    x: app.screen.width / 2 - 100,
+    y: (centerButtonsContainer.children.length * 100) + 300,
     onClick: () => {
       // TODO exit the game instead of showing this alert
       alert("Exiting the game... (function not added yet)");
     },
   });
-  titleScene.addChild(exitButton);
+  centerButtonsContainer.addChild(exitButton);
+};
+
+const addBottomButtons = (app: Application, container: Container) => {
+  const bottomButtonsContainer = new Container();
+  container.addChild(bottomButtonsContainer);
+
+  const gameInfoButton = createButton({
+    label: 'Game info',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100 - 400,
+    y: 600,
+    onClick: () => {
+      // todo
+      notYetImplemented();
+    },
+  });
+  bottomButtonsContainer.addChild(gameInfoButton);
+  const howToPlayButton = createButton({
+    label: 'How to play',
+    buttonColor: 0x466494,
+    x: app.screen.width / 2 - 100 + 400,
+    y: 600,
+    onClick: () => {
+      // todo
+      notYetImplemented();
+    },
+  });
+  bottomButtonsContainer.addChild(howToPlayButton);
 };
