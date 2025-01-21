@@ -1,11 +1,19 @@
 import { Application, Container, Graphics, Text } from "pixi.js";
+import { createButton } from "./utils";
+import { setupShopScene } from "./shop-scene";
 
 /*
 *   Game Scene
 *   TODO Replace the Graphics object with the Kronii sprite
 *   once we have it
 */
-export const setupGameScene = (app: Application, container: Container) => {
+export const setupGameScene = (params: {
+  app: Application,
+  container: Container,
+  changeScene: (from: Container, to: Container) => void,
+}) => {
+  const { app, container, changeScene } = params;
+
   const gameBackground = new Container(); //TODO add background image
 
   //fishing spot object test. The circle appears out of the player's LoS (the screen)
@@ -144,4 +152,17 @@ export const setupGameScene = (app: Application, container: Container) => {
       animationCooldown = false;
     }
   };
+
+  const shopSceneContainer = new Container();
+  const fishDataButton = createButton({
+    label: 'Shop',
+    buttonColor: 0x466494,
+    x: app.screen.width - 200,
+    y: 100,
+    onClick: () => {
+      setupShopScene({app, container: shopSceneContainer});
+      changeScene(container, shopSceneContainer);
+    },
+  });
+  container.addChild(fishDataButton);
 };

@@ -1,3 +1,4 @@
+import { ButtonContainer } from "@pixi/ui";
 import { FillInput, Graphics, Text } from "pixi.js";
 
 export const createButton = (params: {
@@ -9,12 +10,17 @@ export const createButton = (params: {
 }) => {
   const { label, onClick, buttonColor, x, y } = params;
 
-  const button = new Graphics();
-  button.roundRect(0, 0, 200, 60);
-  button.fill(buttonColor);
-  button.interactive = true;
+  const button = new ButtonContainer();
+  const graphics = new Graphics();
+  graphics.roundRect(0, 0, 200, 60);
+  graphics.fill(buttonColor);
+
   button.x = x;
   button.y = y;
+  button.width = 200;
+  button.height = 60;
+
+  button.addChild(graphics);
 
   const text = new Text({
     text: label,
@@ -31,7 +37,7 @@ export const createButton = (params: {
   // todo: this is deprecated
   button.addChild(text);
 
-  button.on("pointerdown", onClick);
+  button.onPress.connect(onClick);
 
   return button;
 };
