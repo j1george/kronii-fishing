@@ -28,7 +28,7 @@ import { setupSettingsScene } from "./settings-scene";
     app, 
     container: titleSceneContainer,
     goToGameScene: () => {
-      setupGameScene(app, gameSceneContainer);
+      setupGameScene({app, container: gameSceneContainer, changeScene});
       changeScene(titleSceneContainer, gameSceneContainer);
     },
     goToSettingsScene: () => { 

@@ -8,9 +8,8 @@ import ConvertCsvToJson from 'convert-csv-to-json';
 export const setupFishDataScene = async (container: Container) => {
   const csvText = await loadCSV('data/test-data.csv');
 
-  console.log({csvText});
   const jsonData = ConvertCsvToJson.fieldDelimiter(',').csvStringToJson(csvText).slice(0, 5);
-  console.log({jsonData});
+
   const jsonText = new Text({
     text: JSON.stringify(jsonData, null, 2),
     style: {
