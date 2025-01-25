@@ -26,20 +26,38 @@ export const setupFishDataScene = async (container: Container) => {
     fishName: string;
     scientificName: string;
     type: string;
-    //the rest of the data
+    averageLenght: string;
+    averageWeight: string;
+    catchMethod: string;
+    catchQuote: string;
+    fishDescription: string;
+    habitat: string;
+    population: string;
+    pricePerPound: string;
+    gameRarity: string;
   };
   //indexing
   const fishes: Record<string, fishData> = {};
 
   jsonData.forEach((fishObject) => {
-    const fishData: {[key: string]: any} = {
-    scientificName: fishObject["Scientific Name"],
-    type: fishObject["Type"],
-    //fill other fish data
+    const fishData: fishData = {
+      fishName: fishObject["FishName"],
+      scientificName: fishObject["ScientificName"],
+      type: fishObject["Type"],
+      averageLenght: fishObject["AverageLength(ft)"],
+      averageWeight: fishObject["AverageWeight(lb)"],
+      catchMethod: fishObject["CatchMethod"],
+      catchQuote: fishObject["CatchQuote"],
+      fishDescription: fishObject["FishDescription"],
+      habitat: fishObject["Habitat"],
+      population: fishObject["Population"],
+      pricePerPound: fishObject["PricePerlb(usd)"],
+      gameRarity: fishObject["ProposedGameRarity"]
   };
-
-    fishes[fishObject["Fish Name"]] = fishData.fishName;
+    console.log("Processing fish: ",fishObject["FishName"], fishData)
+    fishes[fishObject["FishName"]] = fishData;
   });
+  console.log("Final fishes object: ",fishes)
   //store in localforage
   //
   //
