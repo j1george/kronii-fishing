@@ -1,5 +1,6 @@
 import { Container, Text } from 'pixi.js';
 import ConvertCsvToJson from 'convert-csv-to-json';
+import localforage from 'localforage';
 
 /*
 *   Fish Data Scene
@@ -17,6 +18,14 @@ export const setupFishDataScene = async (container: Container) => {
       fontSize: 12,
       fill: 0xffffff,
     },
+  });
+  /*
+  * Localforage DB setup
+  */
+  localforage.config({
+    name:"Kronii fishing game",
+    storeName: "fishObjectDB",
+    description: "Database used to store the fish JSON objects",
   });
   //
   //
@@ -59,6 +68,11 @@ export const setupFishDataScene = async (container: Container) => {
   });
   console.log("Final fishes object: ",fishes)
   //store in localforage
+  try{
+    await localforage.setItem("fishes",fishes);
+  }catch(error){
+    console.error("Error storing data: ", error)
+  }
   //
   //
   //
