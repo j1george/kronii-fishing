@@ -10,21 +10,14 @@ import localforage from 'localforage';
 export const setupFishDataScene = async (container: Container) => {
   const csvText = await loadCSV('data/test-data.csv');
 
-  const jsonData = ConvertCsvToJson.fieldDelimiter(',').csvStringToJson(csvText).slice(0, 5);
+  const jsonData = ConvertCsvToJson.fieldDelimiter(',').csvStringToJson(csvText);
 
    const scrollBox = new ScrollBox({
     background: 0x000000,
     width: 900,
     height: 600,
     type: 'vertical',
-    items: ConvertCsvToJson.fieldDelimiter(',').csvStringToJson(csvText).map((fishObject: any) => new Text({
-          text: JSON.stringify(fishObject, null, 2),
-          style: {
-            fontFamily: "Arial",
-            fontSize: 14,
-            fill: 0xffffff,
-          },
-        })),
+    items: [],
   });
   /*
   * Localforage DB setup
@@ -80,6 +73,26 @@ export const setupFishDataScene = async (container: Container) => {
   }catch(error){
     console.error("Error storing data: ", error)
   }
+  
+  localforage.getItem<Record<string, fishData>>("fishes").then((fishes) => {
+    if (!fishes) {
+      console.warn("Couldn't get data from database");
+      return null;
+    }
+  scrollBox.removeChildren;
+  Object.values(fishes).forEach((fishData)=>{
+    const fishText = new Text({
+      text: JSON.stringify(fishData, null, 2),
+      style: {
+      fontFamily: "Arial",
+      fontSize: 14,
+      fill: 0xffffff,
+      },
+    });
+    scrollBox.addItem(fishText);
+    });
+  });
+  
   //
   //
   //
